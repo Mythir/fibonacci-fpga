@@ -54,10 +54,10 @@ begin
     if rising_edge(clk) then    
         if reset = '1' then
             out_valid <= '1';
-            program_counter <= "00";
+            program_counter <= (others => '0');
         else
             if out_ready = '1' then
-                if program_counter = "11" then
+                if program_counter = "1111" then
                     out_valid <= '0';
                 end if;
                 program_counter <= std_logic_vector(unsigned(program_counter) + 1);

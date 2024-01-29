@@ -120,7 +120,7 @@ begin
     input_reg_address_1 <= input_register(11 downto 8);
     input_reg_address_2 <= input_register(7 downto 4);
     input_reg_address_3 <= input_register(3 downto 0);
-    immediate <= input_register(7 downto 0);
+    immediate <= input_register(7 downto 4);
     
     -- Backpressure pipeline
     in_ready_sig <= out_ready;
@@ -132,14 +132,15 @@ begin
     begin
         case opcode is
             when OP_ADDI =>
-                alu_in_2 <= immediate;
+                alu_in_2 <= "000000000000" & immediate;
             when others =>
                 alu_in_2 <= reg_fetch_data_2;
         end case;
     end process;
     
     -- Bus out process
-    process(alu_out, opcode) is
+    out_data <= bus_out;
+    process(alu_out, opcode, reg_fetch_data_1) is
     begin
         case opcode is
             when OP_ADDI | OP_ADD =>

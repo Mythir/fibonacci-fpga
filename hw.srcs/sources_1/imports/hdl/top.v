@@ -40,9 +40,13 @@ module top (
     wire uart_in_valid;
     wire [15:0] uart_data_in;
     
+    wire exec_in_ready;
+    wire exec_in_valid;
+    wire [15:0] exec_data_in;
+    
     wire program_rom_in_valid;
     wire program_rom_in_ready;
-    wire [1:0] program_rom_address;
+    wire [3:0] program_rom_address;
         
     pwm #(
         .COUNTER_WIDTH(8),
@@ -86,8 +90,21 @@ module top (
         .data_in(uart_data_in)
     );
     
+    exec # (
+        .DATA_WIDTH(16)
+    ) m_exec (
+        .clk(clk),
+        .reset(db_btn[1]),
+        .in_instruction(exec_data_in),
+        .in_valid(exec_in_valid),
+        .in_ready(exec_in_ready),
+        .out_data(uart_data_in),
+        .out_valid(uart_in_valid),
+        .out_ready(uart_in_ready)
+    );
+    
     program_rom # (
-        .address_length(2),
+        .address_length(4),
         .data_length(16)
     ) m_program_rom (
         .clk(clk),
@@ -95,13 +112,13 @@ module top (
         .address(program_rom_address),
         .in_valid(program_rom_in_valid),
         .in_ready(program_rom_in_ready),
-        .out_valid(uart_in_valid),
-        .out_ready(uart_in_ready),
-        .data_out(uart_data_in)
+        .out_valid(exec_in_valid),
+        .out_ready(exec_in_ready),
+        .data_out(exec_data_in)
     );
     
     program_counter # (
-        .address_length(2)
+        .address_length(4)
     ) m_program_counter (
         .clk(clk),
         .reset(db_btn[1]),
