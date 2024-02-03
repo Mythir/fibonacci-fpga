@@ -68,8 +68,11 @@ module top (
     
     debouncer #(
         .WIDTH(2),
-        .CLOCKS(1024),
-        .CLOCKS_CLOG2(10)
+        // Simulation
+        //.CLOCKS(2),
+        //.CLOCKS_CLOG2(1)
+        .CLOCKS(256),
+        .CLOCKS_CLOG2(8)
     ) m_db_btn (
         .clk(clk),
         .din(btn),
@@ -80,6 +83,7 @@ module top (
     uart_tx #(
         .DATA_BUS_WIDTH(16),
         .BAUD_2_CLOCK_RATIO(12000000 / 9600),
+        //.BAUD_2_CLOCK_RATIO(1), // Simulation
         .UART_DATA_BITS(8),
         .UART_STOP_BITS(2)
     ) m_uart_tx (

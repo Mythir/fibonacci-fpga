@@ -166,6 +166,9 @@ begin
                 input_register <= (others => '0');
             elsif in_ready_sig='1' and in_valid = '1' then
                 input_register <= in_instruction;
+            else
+                -- Insert NOP instruction if pipeline stalls
+                input_register <= (others => '0');
             end if;
         end if;
     end process;
