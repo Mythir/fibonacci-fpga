@@ -43,7 +43,7 @@ architecture arch of program_rom is
         "0001000100100001",
         "0011000100000000",
         "0001000100100010",
-        "0000000000000000"
+        "0011001000000000"
     );
     
     signal out_reg_full: std_logic;
