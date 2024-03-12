@@ -25,6 +25,8 @@ architecture arch of program_rom is
     -- set the data on each adress to some value)
     constant mem: rom_type:=
     (
+        "0011000100000000",
+        
         "0010000000010001",
         "0011000100000000",
         "0001000100000010",
@@ -42,8 +44,7 @@ architecture arch of program_rom is
         
         "0001000100100001",
         "0011000100000000",
-        "0001000100100010",
-        "0011001000000000"
+        "0001000100100010"
     );
     
     signal input_register: std_logic_vector((ADDRESS_WIDTH - 1) downto 0);
