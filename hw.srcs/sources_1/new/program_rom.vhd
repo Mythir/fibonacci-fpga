@@ -4,8 +4,8 @@ use ieee.std_logic_arith.all;
  
 entity program_rom is
 generic(
-    address_length: natural := 2;
-    data_length: natural := 16
+    ADDRESS_WIDTH: natural := 2;
+    DATA_WIDTH: natural := 16
 );
 port(
     clk: in std_logic;
@@ -14,13 +14,13 @@ port(
     out_ready: in std_logic;
     in_valid: in std_logic;
     in_ready: out std_logic;
-    address: in std_logic_vector((address_length - 1) downto 0);
-    data_out: out std_logic_vector ((data_length - 1) downto 0)
+    address: in std_logic_vector((ADDRESS_WIDTH - 1) downto 0);
+    data_out: out std_logic_vector ((DATA_WIDTH - 1) downto 0)
 );
 end program_rom;
  
 architecture arch of program_rom is
-    type rom_type is array (0 to (2**(address_length) -1)) of std_logic_vector((data_length - 1) downto 0);
+    type rom_type is array (0 to (2**(ADDRESS_WIDTH) -1)) of std_logic_vector((DATA_WIDTH - 1) downto 0);
     
     -- set the data on each adress to some value)
     constant mem: rom_type:=
@@ -46,30 +46,32 @@ architecture arch of program_rom is
         "0011001000000000"
     );
     
-    signal out_reg_full: std_logic;
+    signal input_register: std_logic_vector((ADDRESS_WIDTH - 1) downto 0);
+    signal in_ready_sig: std_logic;
+    signal out_valid_sig: std_logic;
 begin
-
-    out_valid <= out_reg_full;
-    in_ready <= out_ready;
+    
+    out_valid <= out_valid_sig;
+    in_ready <= in_ready_sig;
+    
+    in_ready_sig <= out_ready;
+    data_out <= mem(conv_integer(unsigned(input_register)));
     
 process(clk) is
     variable consumed: boolean;
 begin
     if rising_edge(clk) then
-        if reset = '1' then
-            out_reg_full <= '0';
+        if reset='1' then
+            input_register <= (others => '0');
+            out_valid_sig <= '0';
         else
-            if out_ready = '1' and out_reg_full = '1' then
-                consumed := true;
-            else
-                consumed := false;
+            if out_valid_sig='1' and out_ready='1' then
+                out_valid_sig <= '0';
             end if;
             
-            if in_valid = '1' and (consumed or out_reg_full = '0') then
-                data_out <= mem(conv_integer(unsigned(address)));
-                out_reg_full <= '1';
-            elsif consumed then
-                out_reg_full <= '0';
+            if in_ready_sig='1' and in_valid = '1' then
+                input_register <= address;
+                out_valid_sig <= '1';
             end if;
         end if;
     end if;

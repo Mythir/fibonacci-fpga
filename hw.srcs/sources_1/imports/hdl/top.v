@@ -108,8 +108,8 @@ module top (
     );
     
     program_rom # (
-        .address_length(4),
-        .data_length(16)
+        .ADDRESS_WIDTH(4),
+        .DATA_WIDTH(16)
     ) m_program_rom (
         .clk(clk),
         .reset(db_btn[1]),
