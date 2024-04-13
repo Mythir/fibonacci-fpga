@@ -116,11 +116,10 @@ begin
     );
     
     -- Split up instruction
-    opcode <= input_register(15 downto 12);
-    input_reg_address_1 <= input_register(11 downto 8);
-    input_reg_address_2 <= input_register(7 downto 4);
-    input_reg_address_3 <= input_register(3 downto 0);
-    immediate <= input_register(7 downto 4);
+    opcode <= input_register(15 downto 12);             --xxxx 0000 0000 0000
+    OP1 <= input_register(11 downto 8);                 --0000 xxxx 0000 0000
+    OP2 <= input_register(7 downto 4);                  --0000 0000 xxxx 0000
+    OP3 <= input_register(3 downto 0);                  --0000 0000 0000 xxxx
     
     -- Backpressure pipeline
     in_ready_sig <= out_ready;
